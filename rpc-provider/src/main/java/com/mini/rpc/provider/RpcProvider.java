@@ -78,6 +78,9 @@ public class RpcProvider implements InitializingBean, BeanPostProcessor {
         }
     }
 
+    /**
+     * 初始化后执行
+     */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
@@ -92,7 +95,10 @@ public class RpcProvider implements InitializingBean, BeanPostProcessor {
                 serviceMeta.setServiceName(serviceName);
                 serviceMeta.setServiceVersion(serviceVersion);
 
+                // 将服务注册到注册中心
                 serviceRegistry.register(serviceMeta);
+
+                // 将注册好的bean，缓存到 Map 中
                 rpcServiceMap.put(RpcServiceHelper.buildServiceKey(serviceMeta.getServiceName(), serviceMeta.getServiceVersion()), bean);
             } catch (Exception e) {
                 log.error("failed to register service {}#{}", serviceName, serviceVersion, e);

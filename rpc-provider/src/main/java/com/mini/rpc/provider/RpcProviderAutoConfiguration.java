@@ -17,6 +17,9 @@ public class RpcProviderAutoConfiguration {
     @Resource
     private RpcProperties rpcProperties;
 
+    /**
+     * 将 rpcProvider 注册为 spring-bean
+     */
     @Bean
     public RpcProvider init() throws Exception {
         RegistryType type = RegistryType.valueOf(rpcProperties.getRegistryType());
