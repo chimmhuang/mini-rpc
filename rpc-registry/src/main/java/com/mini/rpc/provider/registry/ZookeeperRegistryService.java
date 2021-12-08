@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * zookeeper 注册中心客户端
+ */
 public class ZookeeperRegistryService implements RegistryService {
     public static final int BASE_SLEEP_TIME_MS = 1000;
     public static final int MAX_RETRIES = 3;
@@ -36,6 +39,7 @@ public class ZookeeperRegistryService implements RegistryService {
 
     @Override
     public void register(ServiceMeta serviceMeta) throws Exception {
+        // 服务实例
         ServiceInstance<ServiceMeta> serviceInstance = ServiceInstance
                 .<ServiceMeta>builder()
                 .name(RpcServiceHelper.buildServiceKey(serviceMeta.getServiceName(), serviceMeta.getServiceVersion()))
