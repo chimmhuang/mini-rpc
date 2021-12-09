@@ -31,23 +31,37 @@ public class RpcConsumer {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline()
+                                // rpc 编码器
                                 .addLast(new MiniRpcEncoder())
+                                // rpc 解码器
                                 .addLast(new MiniRpcDecoder())
+                                // rpc 返回值处理器
                                 .addLast(new RpcResponseHandler());
                     }
                 });
     }
 
+    /**
+     * 发送 rpc 请求
+     *
+     * @param protocol        rpc协议
+     * @param registryService 注册中心服务
+     */
     public void sendRequest(MiniRpcProtocol<MiniRpcRequest> protocol, RegistryService registryService) throws Exception {
         MiniRpcRequest request = protocol.getBody();
         Object[] params = request.getParams();
         String serviceKey = RpcServiceHelper.buildServiceKey(request.getClassName(), request.getServiceVersion());
 
         int invokerHashCode = params.length > 0 ? params[0].hashCode() : serviceKey.hashCode();
+
+        // 发现服务
         ServiceMeta serviceMetadata = registryService.discovery(serviceKey, invokerHashCode);
 
         if (serviceMetadata != null) {
+            // 连接服务
             ChannelFuture future = bootstrap.connect(serviceMetadata.getServiceAddr(), serviceMetadata.getServicePort()).sync();
+
+            // 添加返回结果监听
             future.addListener((ChannelFutureListener) arg0 -> {
                 if (future.isSuccess()) {
                     log.info("connect rpc server {} on port {} success.", serviceMetadata.getServiceAddr(), serviceMetadata.getServicePort());
@@ -57,6 +71,8 @@ public class RpcConsumer {
                     eventLoopGroup.shutdownGracefully();
                 }
             });
+
+            // 发送请求
             future.channel().writeAndFlush(protocol);
         }
     }

@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * rpc 请求服务对象
+ */
 @Data
 public class MiniRpcRequest implements Serializable {
     private String serviceVersion;

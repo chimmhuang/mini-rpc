@@ -17,6 +17,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Rpc调用代理
+ */
 public class RpcInvokerProxy implements InvocationHandler {
 
     private final String serviceVersion;
@@ -31,7 +34,10 @@ public class RpcInvokerProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // 构造 rpc 协议对象
         MiniRpcProtocol<MiniRpcRequest> protocol = new MiniRpcProtocol<>();
+
+        // 自定义请求协议信息
         MsgHeader header = new MsgHeader();
         long requestId = MiniRpcRequestHolder.REQUEST_ID_GEN.incrementAndGet();
         header.setMagic(ProtocolConstants.MAGIC);
@@ -42,6 +48,7 @@ public class RpcInvokerProxy implements InvocationHandler {
         header.setStatus((byte) 0x1);
         protocol.setHeader(header);
 
+        // 构造 rpc 请求服务对象
         MiniRpcRequest request = new MiniRpcRequest();
         request.setServiceVersion(this.serviceVersion);
         request.setClassName(method.getDeclaringClass().getName());
@@ -53,11 +60,11 @@ public class RpcInvokerProxy implements InvocationHandler {
         RpcConsumer rpcConsumer = new RpcConsumer();
         MiniRpcFuture<MiniRpcResponse> future = new MiniRpcFuture<>(new DefaultPromise<>(new DefaultEventLoop()), timeout);
         MiniRpcRequestHolder.REQUEST_MAP.put(requestId, future);
+
+        // 发起 Rpc 远程调用
         rpcConsumer.sendRequest(protocol, this.registryService);
 
-        // TODO hold request by ThreadLocal
-
-
+        // 等待 rpc 调用执行结果
         return future.getPromise().get(future.getTimeout(), TimeUnit.MILLISECONDS).getData();
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.FactoryBean;
 
 import java.lang.reflect.Proxy;
 
+/**
+ * 代理对象
+ */
 public class RpcReferenceBean implements FactoryBean<Object> {
 
     private Class<?> interfaceClass;
