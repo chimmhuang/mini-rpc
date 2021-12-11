@@ -28,6 +28,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
+/**
+ * json 序列化
+ */
 public class JsonSerialization implements RpcSerialization {
 
     private static final ObjectMapper MAPPER;

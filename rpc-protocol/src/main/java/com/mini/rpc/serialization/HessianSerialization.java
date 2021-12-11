@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Hessian 序列化
+ */
 @Component
 @Slf4j
 public class HessianSerialization implements RpcSerialization {

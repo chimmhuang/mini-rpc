@@ -21,6 +21,15 @@ import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 有了 @RpcReference 注解和 RpcReferenceBean 之后，我们可以使用 Spring 的扩展点
+ * BeanFactoryPostProcessor 对 Bean 的定义进行修改。上文中服务提供者使用的是
+ * BeanPostProcessor，BeanFactoryPostProcessor 和 BeanPostProcessor 都是 Spring 的核心扩展
+ * 点，它们之间有什么区别呢？BeanFactoryPostProcessor 是 Spring 容器加载 Bean 的定义之后以及
+ * Bean 实例化之前执行，所以 BeanFactoryPostProcessor 可以在 Bean 实例化之前获取 Bean 的配置
+ * 元数据，并允许用户对其修改。而 BeanPostProcessor 是在 Bean 初始化前后执行，它并不能修改
+ * Bean 的配置信息。
+ */
 @Component
 @Slf4j
 public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanClassLoaderAware, BeanFactoryPostProcessor {

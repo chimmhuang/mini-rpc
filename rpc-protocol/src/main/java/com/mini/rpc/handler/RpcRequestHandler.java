@@ -15,7 +15,7 @@ import org.springframework.cglib.reflect.FastClass;
 import java.util.Map;
 
 /**
- * rpc 请求处理器
+ * 在 rpc 请求调用的场景下，RpcRequestHandler 并不需要承担编解码操作，所以只需要继承最简单的Handler即可
  */
 @Slf4j
 public class RpcRequestHandler extends SimpleChannelInboundHandler<MiniRpcProtocol<MiniRpcRequest>> {

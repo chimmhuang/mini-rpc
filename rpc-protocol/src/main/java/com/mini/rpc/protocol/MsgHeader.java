@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 消息协议
+ */
 @Data
 public class MsgHeader implements Serializable {
     /*
